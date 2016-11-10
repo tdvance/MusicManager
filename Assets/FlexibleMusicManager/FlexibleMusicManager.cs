@@ -84,10 +84,10 @@ public class FlexibleMusicManager : MonoBehaviour {
     /// </summary>
     /// <param name="path">optional subfolder of resources folder</param>
     /// <returns>Number of unique clips added to playlist</returns>
-    public int LoadClipsFromResources(string path="") {   
+    public int LoadClipsFromResources(string path = "") {
         AudioClip[] clips = Resources.LoadAll<AudioClip>(path);
         int count = 0;
-        foreach(AudioClip clip in clips) {
+        foreach (AudioClip clip in clips) {
             if (!playList.Contains(clip)) {
                 count++;
                 playList.Add(clip);
@@ -284,6 +284,21 @@ public class FlexibleMusicManager : MonoBehaviour {
             saveTime = audioSource.time;
         }
     }
+
+    /// <summary>
+    /// Change track currently being played to specified (0-up) track
+    /// </summary>
+    public void SetNewTrack(int trackNumber) {
+        if (IsPlaying()) {
+            Pause();
+            SetTrack(trackNumber);
+            Play();
+        } else {
+            SetTrack(trackNumber);
+            Pause();
+        }
+    }
+
 
     /// <summary>
     /// Go back to beginning of playlist
@@ -495,6 +510,9 @@ public class FlexibleMusicManager : MonoBehaviour {
         get {
             if (_instance == null) {//in case not awake yet
                 _instance = FindObjectOfType<FlexibleMusicManager>();
+            }
+            if (_instance == null) {
+                Debug.LogWarning("FlexibleMusicManager instance not found; maybe not awake yet or none added to the game");
             }
             return _instance;
         }
